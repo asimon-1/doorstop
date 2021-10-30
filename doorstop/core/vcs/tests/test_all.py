@@ -4,6 +4,8 @@
 
 import unittest
 
+import gitignorant
+
 from doorstop.core.vcs import load
 from doorstop.core.vcs.tests import ROOT
 
@@ -17,8 +19,13 @@ class TestWorkingCopy(unittest.TestCase):
 
     def test_ignores(self):
         """Verify the ignores file is parsed."""
-        patterns = list(self.wc.ignores)
+        patterns = [str(p) for p in self.wc.ignores]
         for pattern in patterns:
             print(pattern)
-        self.assertIn("*__pycache__*", patterns)
-        self.assertIn("*build*", patterns)
+
+        self.assertIn(
+            str(gitignorant.Rule(negative=False, content="__pycache__")), patterns
+        )
+        self.assertIn(
+            str(gitignorant.Rule(negative=False, content="/build/")), patterns
+        )
